@@ -59,14 +59,15 @@ select * from author where passward is not null;
 
 --프로그래머스 sql 문제풀이
 --
-
-
-
-
-
-
-
-
-
-
+-- 오전내용 중
+select * from author;
+alter table author modify column id bigint auto_increment;
+alter table post drop foreign key post_author_fk;
+describe post;
+describe author;
+select * from information_schema.key_column_usage where table_name = 'post';
+alter table post drop foreign key   post_ibfk_1;
+alter table post modify column author_id bigint;
+alter table post add constraint post_author_fk foreign key(author_id) references author(id);
+describe author;
 
