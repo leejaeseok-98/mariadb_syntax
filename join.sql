@@ -44,5 +44,49 @@ select a.email, (select count(*) from post where author_id = a.id)from author a;
 --from절 안에 서브쿼리
 select a.name from (select * from author) as a;
 
+--없어진 기록 찾기
+select * from ANIMAL_OUTS
+
+--집계함수
+select COUNT(id) from author; == select COUNT(*) from author;
+--null은 카운트가 제외된다.
+select sum(price) from post;
+select avg(price) from post;
+--소수점 첫번째자리에서 반올림해서 소수점을 없앱
+select round(avg(price), 0) as '평균' from post;
+
+--group by : 그룹화 데이터를 하나의 행(row)처럼 취급.
+-- author_id로 그룹핑 하였으면, 그외의 컬럼을 조회하는 것은 적절치 않다.
+select author_id from post group by author_id;
+--group by와 집계함수는 같이 활용됨
+--아래 쿼리에서 *은 그룹화된 데이터내에서의 개수
+select author_id, count(*) from post group by author_id;
+select author_id, count(*), sum(price) from post group by author_id;
+
+--author의 email과 author별로 본인이 쓴 글의 개수를 출력
+select a.email, (select count(*) from post where author_id = a.id)from author a;
+-- 위에 문제 join과 group by 집계함수를 사용한 글의 개수 출력 -- join해서 author_id 그룹화하고 개수 씀
+select a.email, count(author_id) from author a inner join post p on a.id = p.author_id group by author_id where ifnull(author_id,0);
+
+
+--where와 group by -- select from join on where group by having order by
+--연도별 post 글의 개수 출력, 연도가 null인 값은 제외
+select date_format(created_time,'%Y') as year, count(*) as count from post where created_time is not null group by year 
+having year = 2024;
+
+-- 자동차 종류 별 특정 옵션이 포함된 자동차 수 구하기
+
+-- 입양 시각 구하기(1)
+
+-- having : group by를 통해 나온 집계값에 대한 조건
+-- 글을 2개 이상 쓴사람에 대한 정보조회
+select author_id from post group by author_id having count(*) >=2;
+select author_id, count(*) as count from post group by author_id having count>=2;
+
+--다중열 group by
+--post에서 작성자별로 만든 제목의 개수를 출력하시오.
+select author_id, title, count(*) from post group by author_id, title;
+
+
 
 
